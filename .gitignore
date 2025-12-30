@@ -1,0 +1,37 @@
+# Credentials - NEVER commit these!
+credentials/service-account.json
+credentials/*.json
+!credentials/.gitkeep
+
+# Environment
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+.venv/
+
+# Logs (optional - remove if you want to track logs)
+logs/*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (optional - remove if you want to track results)
+data/inspection_*.json
+data/bulk_indexing_*.json
+data/rss_*.xml

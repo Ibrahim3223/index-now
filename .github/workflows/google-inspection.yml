@@ -1,0 +1,60 @@
+name: Google URL Inspection
+
+on:
+  schedule:
+    - cron: '0 10 * * 0'  # Her Pazar 10:00 UTC
+
+  workflow_dispatch:
+    inputs:
+      max_urls:
+        description: 'Maximum URLs to inspect per site'
+        required: false
+        default: '100'
+        type: string
+
+jobs:
+  url-inspection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Setup Google credentials
+        run: |
+          mkdir -p credentials
+          echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT }}' > credentials/service-account.json
+
+      - name: Run URL inspection
+        run: |
+          cd scripts
+          python google_url_inspection.py inspect ${{ inputs.max_urls || '100' }}
+
+      - name: Upload inspection results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inspection-results-${{ github.run_number }}
+          path: |
+            data/inspection_*.json
+            data/google_*.json
+            logs/
+          retention-days: 30
+
+      - name: Commit inspection data
+        if: success()
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/*.json || true
+          git diff --staged --quiet || git commit -m "Update Google inspection data [skip ci]"
+          git push || true

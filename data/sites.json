@@ -1,0 +1,64 @@
+{
+  "sites": [
+    {
+      "name": "Rüya Tabiri Sözlüğü",
+      "domain": "ruyatabirisozlugu.com",
+      "key_env": "RUYATABIRI_KEY",
+      "sitemap": "https://ruyatabirisozlugu.com/sitemap.xml",
+      "google_property": "sc-domain:ruyatabirisozlugu.com",
+      "enabled": true,
+      "priority": 1,
+      "total_pages": 8000
+    },
+    {
+      "name": "İsim Sözlüğü",
+      "domain": "isimsozlugu.net",
+      "key_env": "ISIMSOZLUGU_KEY",
+      "sitemap": "https://isimsozlugu.net/sitemap.xml",
+      "google_property": "sc-domain:isimsozlugu.net",
+      "enabled": true,
+      "priority": 1,
+      "total_pages": 5000
+    },
+    {
+      "name": "Çiçek Ansiklopedisi",
+      "domain": "cicekansiklopedisi.com",
+      "key_env": "CICEKANSIKLOPEDISI_KEY",
+      "sitemap": "https://cicekansiklopedisi.com/sitemap.xml",
+      "google_property": "sc-domain:cicekansiklopedisi.com",
+      "enabled": true,
+      "priority": 2,
+      "total_pages": 500
+    },
+    {
+      "name": "Burç Sözlüğü",
+      "domain": "burcsozlugu.com",
+      "key_env": "BURCSOZLUGU_KEY",
+      "sitemap": "https://burcsozlugu.com/sitemap.xml",
+      "google_property": "sc-domain:burcsozlugu.com",
+      "enabled": true,
+      "priority": 1,
+      "total_pages": 1200
+    },
+    {
+      "name": "Miras Haritası",
+      "domain": "mirasharitasi.com",
+      "key_env": "MIRASHARITASI_KEY",
+      "sitemap": "https://mirasharitasi.com/sitemap.xml",
+      "google_property": "sc-domain:mirasharitasi.com",
+      "enabled": true,
+      "priority": 2,
+      "total_pages": 15000
+    },
+    {
+      "name": "Occasion Wish",
+      "domain": "occasionwish.com",
+      "key_env": "OCCASIONWISH_KEY",
+      "sitemap": "https://occasionwish.com/sitemap.xml",
+      "google_property": "sc-domain:occasionwish.com",
+      "enabled": false,
+      "priority": 3,
+      "total_pages": 0
+    }
+  ]
+}
