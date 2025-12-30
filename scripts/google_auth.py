@@ -11,20 +11,38 @@ SCOPES = [
     'https://www.googleapis.com/auth/webmasters.readonly'
 ]
 
-SERVICE_ACCOUNT_FILE = Path(__file__).parent.parent / 'credentials' / 'search-console-482812-ef8276efec13.json'
+CREDENTIALS_DIR = Path(__file__).parent.parent / 'credentials'
+
+# Check multiple possible credential file names
+CREDENTIAL_FILES = [
+    'service-account.json',  # GitHub Actions
+    'search-console-482812-ef8276efec13.json',  # Local development
+]
+
+
+def get_service_account_file():
+    """Find the service account file"""
+    for filename in CREDENTIAL_FILES:
+        filepath = CREDENTIALS_DIR / filename
+        if filepath.exists():
+            return filepath
+    return None
 
 
 def get_search_console_service():
     """Get authenticated Search Console API service"""
 
-    if not SERVICE_ACCOUNT_FILE.exists():
+    service_account_file = get_service_account_file()
+
+    if not service_account_file:
         raise FileNotFoundError(
-            f"Service account file not found: {SERVICE_ACCOUNT_FILE}\n"
+            f"Service account file not found in {CREDENTIALS_DIR}\n"
+            f"Expected one of: {CREDENTIAL_FILES}\n"
             "Please download from Google Cloud Console and place it in credentials/"
         )
 
     credentials = service_account.Credentials.from_service_account_file(
-        str(SERVICE_ACCOUNT_FILE),
+        str(service_account_file),
         scopes=SCOPES
     )
 
