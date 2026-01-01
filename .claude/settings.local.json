@@ -8,7 +8,11 @@
       "Bash(git init:*)",
       "Bash(git remote add:*)",
       "Bash(git add:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Multi-Site Google Indexing Automation\n\n- Google Search Console API integration\n- Sitemap auto-submission for 6 websites\n- URL Inspection API support\n- Bulk indexing strategy with multiple techniques\n- GitHub Actions workflows for automation\n- RSS feed generation for each site\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

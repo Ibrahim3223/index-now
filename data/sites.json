@@ -6,6 +6,7 @@
       "key_env": "RUYATABIRI_KEY",
       "sitemap": "https://ruyatabirisozlugu.com/sitemap.xml",
       "google_property": "sc-domain:ruyatabirisozlugu.com",
+      "indexing_credential": "indexing-ruyatabirisozlugu.json",
       "enabled": true,
       "priority": 1,
       "total_pages": 8000
@@ -16,6 +17,7 @@
       "key_env": "ISIMSOZLUGU_KEY",
       "sitemap": "https://isimsozlugu.net/sitemap.xml",
       "google_property": "sc-domain:isimsozlugu.net",
+      "indexing_credential": "indexing-isimsozlugu.json",
       "enabled": true,
       "priority": 1,
       "total_pages": 5000
@@ -26,6 +28,7 @@
       "key_env": "CICEKANSIKLOPEDISI_KEY",
       "sitemap": "https://cicekansiklopedisi.com/sitemap.xml",
       "google_property": "sc-domain:cicekansiklopedisi.com",
+      "indexing_credential": "indexing-cicekansiklopedisi.json",
       "enabled": true,
       "priority": 2,
       "total_pages": 500
@@ -36,6 +39,7 @@
       "key_env": "BURCSOZLUGU_KEY",
       "sitemap": "https://burcsozlugu.com/sitemap.xml",
       "google_property": "sc-domain:burcsozlugu.com",
+      "indexing_credential": "indexing-burcsozlugu.json",
       "enabled": true,
       "priority": 1,
       "total_pages": 1200
@@ -46,6 +50,7 @@
       "key_env": "MIRASHARITASI_KEY",
       "sitemap": "https://mirasharitasi.com/sitemap.xml",
       "google_property": "sc-domain:mirasharitasi.com",
+      "indexing_credential": "indexing-mirasharitasi.json",
       "enabled": true,
       "priority": 2,
       "total_pages": 15000
@@ -56,6 +61,7 @@
       "key_env": "OCCASIONWISH_KEY",
       "sitemap": "https://occasionwish.com/sitemap.xml",
       "google_property": "sc-domain:occasionwish.com",
+      "indexing_credential": "indexing-occasionwish.json",
       "enabled": false,
       "priority": 3,
       "total_pages": 0

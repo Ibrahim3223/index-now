@@ -1,0 +1,62 @@
+name: Google Instant Indexing
+
+on:
+  schedule:
+    # Run every day at 00:05 UTC (when daily quota resets)
+    - cron: '5 0 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  instant-indexing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Setup credentials
+        run: |
+          mkdir -p credentials
+
+          # Search Console credential (for sitemap fetching)
+          echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT }}' > credentials/service-account.json
+
+          # Instant Indexing credentials (one per site)
+          echo '${{ secrets.INDEXING_RUYATABIRISOZLUGU }}' > credentials/indexing-ruyatabirisozlugu.json
+          echo '${{ secrets.INDEXING_ISIMSOZLUGU }}' > credentials/indexing-isimsozlugu.json
+          echo '${{ secrets.INDEXING_CICEKANSIKLOPEDISI }}' > credentials/indexing-cicekansiklopedisi.json
+          echo '${{ secrets.INDEXING_BURCSOZLUGU }}' > credentials/indexing-burcsozlugu.json
+          echo '${{ secrets.INDEXING_MIRASHARITASI }}' > credentials/indexing-mirasharitasi.json
+
+      - name: Run Instant Indexing
+        run: |
+          cd scripts
+          python google_instant_indexing.py
+
+      - name: Commit progress
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/indexing_progress.json data/indexing_history.json || true
+          git diff --staged --quiet || git commit -m "Update indexing progress [skip ci]"
+          git push || true
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instant-indexing-logs-${{ github.run_number }}
+          path: logs/
+          retention-days: 14
