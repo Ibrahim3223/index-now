@@ -62,8 +62,8 @@
       "sitemap": "https://occasionwish.com/sitemap.xml",
       "google_property": "sc-domain:occasionwish.com",
       "indexing_credential": "indexing-occasionwish.json",
-      "enabled": false,
-      "priority": 3,
+      "enabled": true,
+      "priority": 1,
       "total_pages": 0
     }
   ]

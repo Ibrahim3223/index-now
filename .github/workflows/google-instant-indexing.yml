@@ -39,6 +39,7 @@ jobs:
           echo '${{ secrets.INDEXING_CICEKANSIKLOPEDISI }}' > credentials/indexing-cicekansiklopedisi.json
           echo '${{ secrets.INDEXING_BURCSOZLUGU }}' > credentials/indexing-burcsozlugu.json
           echo '${{ secrets.INDEXING_MIRASHARITASI }}' > credentials/indexing-mirasharitasi.json
+          echo '${{ secrets.INDEXING_OCCASIONWISH }}' > credentials/indexing-occasionwish.json
 
       - name: Run Instant Indexing
         run: |
