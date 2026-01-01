@@ -18,6 +18,8 @@ from utils import logger, fetch_sitemap_urls, save_json, load_json
 # Constants
 DAILY_LIMIT = 200  # Google's daily limit per project
 RESUBMIT_AFTER_DAYS = 30  # Re-submit URLs older than this
+RETRY_WAIT_MINUTES = 5  # Wait time between retries on quota error
+MAX_RETRIES = 6  # Max retries (6 x 5 min = 30 min total)
 
 # Directories
 DATA_DIR = Path(__file__).parent.parent / 'data'
@@ -107,8 +109,8 @@ def get_site_progress(progress, domain):
     return progress[domain]
 
 
-def submit_url_to_indexing(service, url, action='URL_UPDATED'):
-    """Submit a single URL to Google Indexing API"""
+def submit_url_to_indexing(service, url, action='URL_UPDATED', retry_count=0):
+    """Submit a single URL to Google Indexing API with retry logic"""
 
     try:
         body = {
@@ -119,18 +121,42 @@ def submit_url_to_indexing(service, url, action='URL_UPDATED'):
         response = service.urlNotifications().publish(body=body).execute()
 
         logger.info(f"[OK] Submitted: {url}")
-        return True, response
+        return True, response, False  # success, response, should_retry
 
     except Exception as e:
         error_msg = str(e)
 
         # Check for quota exceeded
         if 'quota' in error_msg.lower() or '429' in error_msg:
-            logger.warning(f"[QUOTA] Daily limit reached")
-            return False, 'QUOTA_EXCEEDED'
+            logger.warning(f"[QUOTA] Daily limit reached (attempt {retry_count + 1})")
+            return False, 'QUOTA_EXCEEDED', True  # should_retry = True
 
         logger.error(f"[ERROR] Failed to submit {url}: {e}")
-        return False, error_msg
+        return False, error_msg, False  # should_retry = False
+
+
+def submit_with_retry(service, url, action='URL_UPDATED'):
+    """Submit URL with retry logic on quota errors"""
+
+    for attempt in range(MAX_RETRIES + 1):
+        success, response, should_retry = submit_url_to_indexing(service, url, action, attempt)
+
+        if success:
+            return True, response
+
+        if not should_retry:
+            return False, response
+
+        # Quota error - wait and retry
+        if attempt < MAX_RETRIES:
+            wait_seconds = RETRY_WAIT_MINUTES * 60
+            logger.info(f"[RETRY] Waiting {RETRY_WAIT_MINUTES} minutes before retry {attempt + 2}/{MAX_RETRIES + 1}...")
+            time.sleep(wait_seconds)
+        else:
+            logger.warning(f"[GIVE UP] Max retries ({MAX_RETRIES}) reached, stopping")
+            return False, 'MAX_RETRIES_EXCEEDED'
+
+    return False, 'MAX_RETRIES_EXCEEDED'
 
 
 def get_urls_to_submit(site, progress, history):
@@ -255,8 +281,11 @@ def process_site(site, progress, history):
     # Submit URLs
     sent_count = 0
 
+    # Cache sitemap URLs for history update
+    sitemap_urls_cache = {u['url']: u.get('lastmod') for u in fetch_sitemap_urls(site['sitemap'])}
+
     for i, url in enumerate(urls_to_process, 1):
-        success, response = submit_url_to_indexing(service, url)
+        success, response = submit_with_retry(service, url)
 
         if success:
             sent_count += 1
@@ -269,7 +298,7 @@ def process_site(site, progress, history):
 
             history[domain][url] = {
                 'last_submitted': datetime.now().isoformat(),
-                'lastmod': next((u.get('lastmod') for u in fetch_sitemap_urls(site['sitemap']) if u['url'] == url), None)
+                'lastmod': sitemap_urls_cache.get(url)
             }
 
             # Save progress periodically
@@ -278,8 +307,8 @@ def process_site(site, progress, history):
                 save_history(history)
                 logger.info(f"[PROGRESS] {sent_count}/{len(urls_to_process)} sent")
 
-        elif response == 'QUOTA_EXCEEDED':
-            logger.warning(f"[QUOTA] Stopping - daily limit reached")
+        elif response in ['QUOTA_EXCEEDED', 'MAX_RETRIES_EXCEEDED']:
+            logger.warning(f"[STOP] Stopping due to: {response}")
             break
 
         # Rate limiting (be gentle with API)
